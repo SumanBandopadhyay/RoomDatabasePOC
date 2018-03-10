@@ -1,4 +1,4 @@
-package com.example.suman.roomdatabasepoc.database;
+package com.example.suman.roomdatabasepoc.executor;
 
 /**
  * Created by Suman on 26-02-2018.
@@ -15,20 +15,20 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class AppExecuters {
+public class AppExecutors {
 
     private final Executor diskIO;
     private final Executor networkIO;
     private final Executor mainThread;
 
-    public AppExecuters(Executor diskIO, Executor networkIO, Executor mainThread) {
+    public AppExecutors(Executor diskIO, Executor networkIO, Executor mainThread) {
         this.diskIO = diskIO;
         this.networkIO = networkIO;
         this.mainThread = mainThread;
     }
 
     @Inject
-    public AppExecuters() {
+    public AppExecutors() {
         this(Executors.newSingleThreadExecutor(), Executors.newFixedThreadPool(3), new MainThreadExecutor());
     }
 

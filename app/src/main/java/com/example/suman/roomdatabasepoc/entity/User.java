@@ -1,4 +1,4 @@
-package com.example.suman.roomdatabasepoc.database;
+package com.example.suman.roomdatabasepoc.entity;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;

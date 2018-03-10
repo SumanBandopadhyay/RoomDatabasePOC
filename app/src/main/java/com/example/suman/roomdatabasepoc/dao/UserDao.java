@@ -1,9 +1,11 @@
-package com.example.suman.roomdatabasepoc.database;
+package com.example.suman.roomdatabasepoc.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+
+import com.example.suman.roomdatabasepoc.entity.User;
 
 import java.util.List;
 
