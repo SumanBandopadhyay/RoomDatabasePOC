@@ -9,10 +9,14 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
+import android.util.Log;
 
 import com.example.suman.roomdatabasepoc.dao.UserDao;
 import com.example.suman.roomdatabasepoc.entity.User;
 import com.example.suman.roomdatabasepoc.executor.AppExecutors;
+import com.example.suman.roomdatabasepoc.utils.DatabaseInitializer;
+
+import java.util.List;
 
 /**
  * Created by Suman on 26-02-2018.
@@ -20,6 +24,8 @@ import com.example.suman.roomdatabasepoc.executor.AppExecutors;
 
 @Database(entities = {User.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
+
+    private static final String TAG = AppDatabase.class.getName();
 
     private static AppDatabase INSTACE;
 
@@ -30,11 +36,11 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private final MutableLiveData<Boolean> IS_DATABASE_CREATED = new MutableLiveData<>();
 
-    public static AppDatabase getInstance(final Context context, final AppExecutors executers) {
+    public static AppDatabase getInstance(final Context context) {
         if (INSTACE == null) {
             synchronized (AppDatabase.class) {
                 if (INSTACE == null) {
-                    INSTACE = buildDatabase(context.getApplicationContext(), executers);
+                    INSTACE = buildDatabase(context.getApplicationContext());
                     INSTACE.updateDatabaseCreated(context.getApplicationContext());
                 }
             }
@@ -55,7 +61,7 @@ public abstract class AppDatabase extends RoomDatabase {
         IS_DATABASE_CREATED.postValue(true);
     }
 
-    private static AppDatabase buildDatabase(final Context applicationContext, final AppExecutors executers) {
+    private static AppDatabase buildDatabase(final Context applicationContext) {
         return Room.databaseBuilder(applicationContext, AppDatabase.class, DATABASE_NAME)
                 .addCallback(new Callback() {
                     @Override

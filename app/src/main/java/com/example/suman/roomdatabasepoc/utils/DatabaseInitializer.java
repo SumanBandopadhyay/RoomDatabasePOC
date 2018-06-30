@@ -1,10 +1,12 @@
 package com.example.suman.roomdatabasepoc.utils;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.suman.roomdatabasepoc.database.AppDatabase;
 import com.example.suman.roomdatabasepoc.entity.User;
+import com.example.suman.roomdatabasepoc.executor.AppExecutors;
 
 import java.util.List;
 
@@ -18,9 +20,22 @@ public class DatabaseInitializer {
 
     private static final String TAG = DatabaseInitializer.class.getName();
 
-    public static void populateAsync(@NonNull final AppDatabase db) {
-        PopulateDbAsync task = new PopulateDbAsync(db);
-        task.execute();
+    public static void populateAsync(@NonNull final AppDatabase db, AppExecutors executors, Context context) {
+        executors.getDiskIO().execute(() -> {
+            // Add delay to simulate long running Action
+            addDelay();
+            //Generate the data for pre-population
+            AppDatabase database = AppDatabase.getInstance(context.getApplicationContext());
+            populateWithTestData(database);
+        });
+    }
+
+    private static void addDelay() {
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void populateWithTestData(AppDatabase db) {
@@ -34,23 +49,9 @@ public class DatabaseInitializer {
         Log.d(DatabaseInitializer.TAG, "Rows Count : " + users.size());
     }
 
-    private static User addUser(AppDatabase db, User user) {
-        db.userDao().insertAll(user);
-        return user;
-    }
-
-    private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
-
-        private final AppDatabase db;
-
-        public PopulateDbAsync(AppDatabase db) {
-            this.db = db;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            populateWithTestData(db);
-            return null;
-        }
+    private static void addUser(AppDatabase db, User user) {
+        db.runInTransaction(() -> {
+            db.userDao().insertAll(user);
+        });
     }
 }
